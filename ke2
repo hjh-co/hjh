@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政协委员通 </title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        body {
+            background: #f7f8fa;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ========== 左侧侧边栏 ========== */
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px;
+            height: 60px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logo h2 {
+            color: #d93438;
+            font-size: 18px;
+        }
+
+        /* 左侧菜单 */
+        .side-menu {
+            padding-top: 16px;
+            flex: 1;
+        }
+
+        .menu-item {
+            padding: 0 20px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .menu-item.active {
+            color: #d93438;
+            font-weight: 500;
+            background: #fef2f2;
+        }
+
+        .menu-item.active::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 24px;
+            background: #d93438;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .menu-item:hover:not(.active) {
+            background: #f5f7fa;
+        }
+
+        /* 右侧用户（顶部） */
+        .top-bar {
+            position: fixed;
+            left: 200px;
+            top: 0;
+            right: 0;
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 24px;
+            z-index: 99;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fde2e4;
+            color: #d93438;
+            display: grid;
+            place-items: center;
+            font-weight: bold;
+        }
+
+        /* ========== 内容区域 ========== */
+        .container {
+            margin-left: 200px;
+            margin-top: 60px;
+            padding: 24px 16px;
+            max-width: calc(100% - 200px);
+        }
+
+        /* 面包屑 */
+        .breadcrumb {
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* 统计卡片 */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #d93438;
+        }
+
+        .stat-card.blue {
+            border-left-color: #165dff;
+        }
+
+        .stat-card.green {
+            border-left-color: #00b42a;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .num {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* 模块标题 */
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title i {
+            color: #d93438;
+        }
+
+        /* 文件卡片 */
+        .file-grid {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .file {
+            width: 220px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .file-preview {
+            height: 140px;
+            display: grid;
+            place-items: center;
+            background: #f5f7fa;
+        }
+
+        .file-info {
+            padding: 12px;
+        }
+
+        .file-name {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .file-time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* 动态列表 */
+        .news-box {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .news-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+            display: flex;
+            gap: 12px;
+        }
+
+        .news-tag {
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            background: #fff5f5;
+            color: #d93438;
+            white-space: nowrap;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .news-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .news-date {
+            font-size: 11px;
+            color: #999;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== 左侧侧边栏 ========== -->
+<div class="sidebar">
+    <div class="logo">
+        <h2>政协委员通</h2>
+    </div>
+
+    <div class="side-menu">
+        <div class="menu-item active" data-page="home"> <i class="fa-solid fa-house-chimney mr-2"></i>委员之家</div>
+        <div class="menu-item" data-page="street"> <i class="fa-solid fa-street-view mr-2"></i>街道委员小组</div>
+        <div class="menu-item" data-page="sector"> <i class="fa-solid fa-sitemap mr-2"></i>界别基本情况</div>
+        <div class="menu-item" data-page="center"> <i class="fa-solid fa-handshake mr-2"></i>协商民主实践</div>
+        <div class="menu-item" data-page="work"> <i class="fa-solid fa-briefcase mr-2"></i>委员履职平台</div>
+        <div class="menu-item" data-page="star"> <i class="fa-solid fa-star mr-2"></i>星级工作室风采</div>
+        <div class="menu-item" data-page="plan"> <i class="fa-solid fa-calendar-days mr-2"></i>2026履职计划</div>
+    </div>
+</div>
+
+<!-- ========== 顶部栏（用户信息） ========== -->
+<div class="top-bar">
+    <div class="top-right">
+        <i class="fa-solid fa-search"></i>
+        <i class="fa-solid fa-bell"></i>
+        <div class="user">委</div>
+    </div>
+</div>
+
+<!-- ========== 内容区域 ========== -->
+<div class="container">
+    <div class="breadcrumb" id="path">当前位置：首页 / 委员之家</div>
+    <div id="content"></div>
+</div>
+
+<script>
+    const pages = {
+        home: { name: "委员之家", path: "首页 / 委员之家" },
+        street: { name: "街道委员小组", path: "首页 / 街道委员小组" },
+        sector: { name: "界别基本情况", path: "首页 / 界别基本情况" },
+        center: { name: "协商民主实践", path: "首页 / 协商民主实践" },
+        work: { name: "委员履职平台", path: "首页 / 委员履职平台" },
+        star: { name: "星级工作室风采", path: "首页 / 星级工作室风采" },
+        plan: { name: "2026履职计划", path: "首页 / 2026履职计划" }
+    };
+
+    // 渲染页面
+    function render(page) {
+        document.getElementById("path").innerText = "当前位置：" + pages[page].path;
+        document.getElementById("content").innerHTML = `
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="label">数据总量</div>
+                    <div class="num">0 项</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="label">最近更新</div>
+                    <div class="num">2026-04-23</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="label">分类总数</div>
+                    <div class="num">16 类</div>
+                </div>
+            </div>
+
+            <div class="title"><i class="fa-solid fa-thumbtack"></i>${pages[page].name} - 资料文件</div>
+            <div class="file-grid">
+                <div class="file">
+                    <div class="file-preview"><i class="fa-solid fa-image fa-2x"></i></div>
+                    <div class="file-info">
+                        <div class="file-name">活动现场照片</div>
+                        <div class="file-time">2026-04-23</div>
+                    </div>
+                </div>
+                <div class="file">
+                    <div class="file-preview" style="background:#eff6ff"><i class="fa-brands fa-word fa-2x" style="color:#165dff"></i></div>
+                    <div class="file-info">
+                        <div class="file-name">情况介绍文档</div>
+                        <div class="file-time">2026-04-22</div>
+                    </div>
+                </div>
+                <div class="file">
+                    <div class="file-preview" style="background:#f0fdf4"><i class="fa-brands fa-excel fa-2x" style="color:#00b42a"></i></div>
+                    <div class="file-info">
+                        <div class="file-name">数据统计表格</div>
+                        <div class="file-time">2026-04-21</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-box">
+                <div class="title"><i class="fa-solid fa-bell"></i>${pages[page].name} - 最新动态</div>
+                <div class="news-item">
+                    <div class="news-tag">会议</div>
+                    <div class="news-content">
+                        <div class="news-title">政协委员专题工作会议</div>
+                        <div class="news-desc">开展专题调研与工作部署</div>
+                        <div class="news-date">2026-04-19</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-tag" style="background:#fff7ed;color:#f57c00">活动</div>
+                    <div class="news-content">
+                        <div class="news-title">基层履职实践活动</div>
+                        <div class="news-desc">深入社区开展服务与协商</div>
+                        <div class="news-date">2026-04-18</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 菜单切换
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            render(item.dataset.page);
+        });
+    });
+
+    // 默认打开
+    render('home');
+</script>
+</body>
+</html>
